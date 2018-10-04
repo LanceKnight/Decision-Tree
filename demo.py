@@ -21,6 +21,8 @@ class Node:
 		self.left = left
 		self.right = right
 		self.v = v
+	def __str__(self):
+		return 'left:'+ str(self.v)+ ', right:'+str(self.v)+', threshold:'+ str(self.v)+'\n'
 
 def get_column_array(matrix, i):#get a column array of index i
 	column_array = []
@@ -100,20 +102,19 @@ def get_gini(matrix):
 
 def build_tree(matrix, d):
 	if d <2:
-		print 'building tree node, depth:', d
+		print '\nbuilding tree node, depth:', d
 		best_index = get_gini(matrix)
 		print 'best index is: ', best_index #==========optional output 
 		column_array = get_column_array(matrix, best_index)
 		v = 	get_threshold(column_array)
 		print "threshold is: ", v
 		greater_matrix, smaller_matrix = get_groups_matrix(matrix, best_index, v)
-		print greater_matrix#==========optional output
-		print '\n'#==========optional output
-		print smaller_matrix	#==========optional output
+		print 'greater matrix:',greater_matrix#==========optional output
+		print 'smaller matrix:',smaller_matrix	#==========optional output
 		d +=1
 		left = build_tree(greater_matrix,d)
-		right = build_tree(smaller_matrix,d)
-		node = Node(left, right, v)
+		#right = build_tree(smaller_matrix,d)
+		node = Node(left, 4, v)
 	else:
 		node = Node(None, None, None)
 	return node
@@ -128,6 +129,6 @@ print get_gini(a)
 
 
 #building tree
-build_tree(a,0)
-
+root = build_tree(a,0)
+print root
 
