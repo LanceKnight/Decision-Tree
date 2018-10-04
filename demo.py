@@ -32,21 +32,46 @@ def get_threshold(column_array):#get threshold of a column array
 	return sum(column_array)/len(column_array)
 	
 
-def get_groups(array, v):#based on a threshold v, divde array into two groups	
-	greater_tuple = {'row': 0, 'value':0}
-	smaller_tuple = {'row': 0, 'value':0}
+def get_groups(column_array, v):#based on a threshold v, divde array into two groups	
+	print 'column: ', column_array
 	greater_array = []
 	smaller_array = []
-	for i in range(0,len(array)):
-		if array[i]>v:
-			greater.append(array[i])
+	for j in range(0,len(column_array)):	
+		greater_tuple = {'row': 0, 'value':0}
+		smaller_tuple = {'row': 0, 'value':0}
+		if column_array[j]>v:
+			greater_tuple['row'] = j
+			greater_tuple['value'] =column_array[j]
+			greater_array.append(greater_tuple)
 		else:
-			smaller.append(array[i])
-			
-	return greater, smaller
+			smaller_tuple['row'] = j
+			smaller_tuple['value'] = column_array[j]
+			smaller_array.append(smaller_tuple)	
+	return greater_array, smaller_array
 
-def get_groups_with_row_number(matrix, i, v):
+def get_groups_matrix(matrix, i, v):
 	column_array = get_column_array(matrix, i)
+	greater_array, smaller_array = get_groups(column_array, v)
+	print 'greater array:', greater_array
+
+	print 'smaller array:', len(smaller_array)
+	greater_index = []
+	smaller_index = []
+	for i in range(0, len(greater_array)):
+		greater_index.append(greater_array[i]['row'])
+
+	for i in range(0, len(smaller_array)):
+		smaller_index.append( smaller_array[i]['row'])
+
+	greater_matrix = []
+	smaller_matrix = []
+	for i in range(0, len(greater_index)):
+		greater_matrix.append(matrix[greater_index[i]])
+
+	for i in range(0, len(smaller_index)):
+		smaller_matrix.append( matrix[smaller_index[i]])
+
+	return greater_matrix, smaller_matrix
 	
 
 def evaluate(greater, smaller, best, i):#update the best ratio and correspoding index number
@@ -73,10 +98,17 @@ def get_gini(matrix):
 	return best['index']			
 
 
-def build_tree(matrix):
+def build_tree(matrix, d):
+	print 'building tree node, depth:', d
 	best_index = get_gini(matrix)
+	print 'best index is: ', best_index #==========optional output 
 	column_array = get_column_array(matrix, best_index)
-	
+	v = 	get_threshold(column_array)
+	print "threshold is: ", v
+	greater_matrix, smaller_matrix = get_groups_matrix(matrix, best_index, v)
+	print greater_matrix#==========optional output
+	print '\n'#==========optional output
+	print smaller_matrix	#==========optional output
 
 
 	root = Node(1,2,3)
@@ -84,12 +116,15 @@ def build_tree(matrix):
 	return root
 
 #example 1 to demostrate how get_gini() works
-a = [[3,5],[7,6],[8,9]]
+a = [\
+	[3,5],\
+   [7,6],\
+	[8,9]]
 #b = load_bird()
 print get_gini(a)
 
 
 #building tree
-build_tree(a)
+build_tree(a,0)
 
 
